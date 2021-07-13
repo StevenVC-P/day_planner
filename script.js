@@ -1,17 +1,7 @@
-//goals for 3/17
-//create a loop for hour elements
-
-//steps code news
-//code is going to need to know where to put the elements
-//the order of the elements
-//when to create the next line of elements
-
-//going to crate a variable to main element
-
-
 // variables created using Moment used for creating hour day at the top of page 
 //and to change color of blocks based on users current hour.
-var today = moment().format("MMM Do YY");
+var today = moment();
+
 var currentHour = moment().format('HH'); 
 
 //simply pulling the block the elements from the html, to append elements created on .js
@@ -20,12 +10,11 @@ var jumboTron = $('.jumboTron');
 
 //this is the array the .js builds itself around.  Starts as an empty array on reloads and if local storage is empty
 var arrayTime = JSON.parse(localStorage.getItem("userInput")) || [];
+console.log(arrayTime);
+console.log(arrayTime[2])
 
-//current issue, creating div element to display current day, and to input the value from moment
-var todayEl = $('<div>');
-todayEl.text(today);
-jumboTron.append(todayEl);
-console.log(currentHour);
+//created div element to display current day, and to input the value from moment
+$("#currentDay").text(today.format("dddd, MMM Do"));
 
 //creating array structure will be built on and data the array of objects will need.
 if (arrayTime.length == 0){
@@ -49,7 +38,6 @@ if (arrayTime.length == 0){
         arrayTime.push(hourBlock);
     }
 };
-
 //color codes the hour if past present or future
 function checkHour (textAreaEl, index) {
     if (arrayTime[index].militaryTime == currentHour) {
@@ -59,7 +47,6 @@ function checkHour (textAreaEl, index) {
     } else {
         textAreaEl.addClass('future');
     }
-    console.log(arrayTime[index].militaryTime);
 }
 
 //creating structure of page, for the lgnth of the array, a row is created that contains the hour, a textbox and a button.
@@ -67,7 +54,7 @@ arrayTime.forEach(function (hourBlock, index) {
         var rowEl = $('<div>');
         rowEl.addClass('row');
         var hourEl = $('<div>');
-        hourEl.addClass('hour col-1');
+        hourEl.addClass('time-block hour col-1');
         hourEl.text(hourBlock.hour +" "+ hourBlock.meridiem);
 
         var textAreaEl = $('<textarea>');
@@ -75,11 +62,10 @@ arrayTime.forEach(function (hourBlock, index) {
         textAreaEl.attr('data-index', index);
         textAreaEl.text(hourBlock.actText); 
 
-        checkHour(textAreaEl, index);  //function on line 54
+        checkHour(textAreaEl, index);  //function on line 42
 
         var buttonEl = $('<button><i class="fas fa-save fa"></i>');
         buttonEl.addClass('saveBtn col-1');
-        hourBlock.actText = buttonEl.val();
 
         rowEl.append(hourEl);
         rowEl.append(textAreaEl);
@@ -95,9 +81,10 @@ containerEl.on('click', '.saveBtn' ,function(){
     //takes users's input, the custom data attribute of the text area, and stores it into a variable
     var textAreaIndex = textAreaObj.attr('data-index');
     //taking the value from the custom data attribute and adding it to the index of the object which the textbox sits as new key value.
+    console.log(textAreaObj);
+    console.log(textAreaIndex);
     arrayTime[textAreaIndex].actText = textAreaObj.val();
-
-    console.log(textAreaObj.val(), textAreaIndex);
+    console.log(arrayTime);
 
     //settimeblock array to be an empty array
     localStorage.setItem("userInput", JSON.stringify(arrayTime));
